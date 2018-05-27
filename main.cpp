@@ -2,6 +2,10 @@
 #include <windows.h>
 #include <conio.h>
 #include <stdlib.h>
+#include <fstream>
+#include <ctype.h>
+#include <thread>
+
 #define up_arrow 72
 #define down_arrow 80
 #define left_arrow 75
@@ -11,6 +15,104 @@
 #define enter_key 13 //valor ascii de enter
 
 using namespace std;
+
+int puntuacionMala;
+
+/**
+ * Funcion que actualiza la puntuacion solamente se manda imprimir, recibe como parametro la puntuacion
+ * @param score
+ */
+
+void actualizarPuntuacion(int score){
+
+
+
+};
+/**
+ * Funcion utilizada para poder leer la pregunta y las respuestas de un archivo de texto.
+ * Recibe de parametros un numero que ayuda a encontrar la pregunta.
+ * @param posRand
+ */
+void leerPregunta(int posRand){
+
+
+    int rand;
+    ifstream myFile;
+    string pregunta;
+    string prev = "";
+    string trash;
+    myFile.open("Preguntas.txt", ios::in);
+    if(myFile.is_open()) {
+        rand = posRand / 5;
+        rand = rand * 5;
+        for (int i = 0; i < rand; i++){
+            getline(myFile, trash);
+        }
+        for (int i = 0; i < 5; i++) {
+            getline(myFile, pregunta);
+            if (pregunta != prev) {
+                prev = pregunta;
+                size_t pos = pregunta.find('*');
+                if (pos != string::npos)
+                {
+                    pregunta = pregunta.substr(pos + 1);
+                }
+
+                cout << pregunta << endl;
+
+            }
+        }
+    } else{
+        cout << "hla"<<endl;
+    }
+}
+/**
+ * Funcion utilizada para poder comprobar si la respuesta ingresada es la  correcta. Acepta como Parametros el numero de la
+ * pregunta y la respuesta que ingreso el usuario. Regresa un entero que es utilizado para sumar la puntuacion.
+ * @param posRand
+ * @param respuesta
+ * @return
+ */
+int checarRespuesta(int posRand, char respuesta){
+    ifstream myFile;
+    string pregunta;
+    string prev = "";
+    string trash;
+    int rand;
+    int numRespuesta;
+    numRespuesta = respuesta - 64;
+    if(numRespuesta > 4){
+        numRespuesta = respuesta - 96;
+    }
+    myFile.open("Preguntas.txt", ios::in);
+    if(myFile.is_open()) {
+        rand = posRand / 5;
+        rand = rand * 5;
+        for (int i = 0; i < rand; i++){
+            getline(myFile, trash);
+        }
+        int i = 0;
+        while (i < 5){
+            getline(myFile, pregunta);
+            if (pregunta != prev) {
+                prev = pregunta;
+                size_t pos = pregunta.find('*');
+                if (pos != string::npos)
+                {
+                    if(i == numRespuesta){
+                        return 1;
+                    } else {
+                        puntuacionMala = puntuacionMala + 1;
+                        return 0;
+                    }
+                }
+            }
+            i++;
+        }
+    } else{
+        cout << "hla"<<endl;
+    }
+}
 
 void gotoxy(int x,int y){
       HANDLE hcon;
@@ -40,15 +142,12 @@ char waitForAnyKey(void)//En esta funcion se utiliza la funcion khbit ya que est
 /*void  pausa()
 {
 	int i;
-
 	gotoxy(20,13);
 	printf("**Pausa**");
 	waitForAnyKey();
 	gotoxy(20,13);
 	printf("            ");
 }
-
-
 */void MARCO()
 {
 	int ancho =90, alto=30;//Se declaran dos variable de tipo entero
@@ -150,12 +249,10 @@ char waitForAnyKey(void)//En esta funcion se utiliza la funcion khbit ya que est
             gotoxy(x6,y6++);
             cout<<tecla;
         }
-
         for(int p=0; p<4; p++){
             gotoxy(x7,y6++);
             cout<<tecla;
         }
-
 }*/
 
 
@@ -290,6 +387,35 @@ int main(){
 		{
 		    system("color 90");
 			case 0:
+			    srand(time(NULL));
+                char respuesta;
+                int puntuacion;
+                //thread hiloPuntuacion;
+
+                while(puntuacionMala < 4){
+
+                    int numRand = 1 + rand() % 400;
+                    leerPregunta(numRand);
+
+                    do {
+                        char temp;
+                        cout << "Ingresa la respuesta: ";
+                        cin >> temp;
+
+                        respuesta = toupper(temp);
+
+                        if((respuesta != 'A') && (respuesta != 'B') && (respuesta != 'C') && (respuesta != 'D')){
+                            cout << "\nRespuesta no valida, verifique e intente de nuevo\n";
+
+                        }
+
+                    } while((respuesta != 'A') && (respuesta != 'B') && (respuesta != 'C') && (respuesta != 'D'));
+
+                    puntuacion += checarRespuesta(numRand, respuesta);
+                   //hiloPuntuacion = thread(&actualizarPuntuacion, puntuacion);
+                }
+
+			    system("PAUSE");
 				break;
 			case 1:
 				break;
@@ -304,4 +430,3 @@ int main(){
 
 	return 0;
 }
-
