@@ -1,4 +1,6 @@
+
 #include <iostream>
+#define _WIN32_WINNT 0x0500
 #include <windows.h>
 #include <conio.h>
 #include <stdlib.h>
@@ -6,6 +8,7 @@
 #include <ctype.h>
 #include <thread>
 
+#define _WIN32_WINNT 0x0500
 #define up_arrow 72
 #define down_arrow 80
 #define left_arrow 75
@@ -19,100 +22,11 @@ using namespace std;
 int puntuacionMala;
 
 /**
- * Funcion que actualiza la puntuacion solamente se manda imprimir, recibe como parametro la puntuacion
- * @param score
- */
-
-void actualizarPuntuacion(int score){
-
-
-
-};
-/**
  * Funcion utilizada para poder leer la pregunta y las respuestas de un archivo de texto.
  * Recibe de parametros un numero que ayuda a encontrar la pregunta.
  * @param posRand
  */
-void leerPregunta(int posRand){
 
-
-    int rand;
-    ifstream myFile;
-    string pregunta;
-    string prev = "";
-    string trash;
-    myFile.open("Preguntas.txt", ios::in);
-    if(myFile.is_open()) {
-        rand = posRand / 5;
-        rand = rand * 5;
-        for (int i = 0; i < rand; i++){
-            getline(myFile, trash);
-        }
-        for (int i = 0; i < 5; i++) {
-            getline(myFile, pregunta);
-            if (pregunta != prev) {
-                prev = pregunta;
-                size_t pos = pregunta.find('*');
-                if (pos != string::npos)
-                {
-                    pregunta = pregunta.substr(pos + 1);
-                }
-
-                cout << pregunta << endl;
-
-            }
-        }
-    } else{
-        cout << "hla"<<endl;
-    }
-}
-/**
- * Funcion utilizada para poder comprobar si la respuesta ingresada es la  correcta. Acepta como Parametros el numero de la
- * pregunta y la respuesta que ingreso el usuario. Regresa un entero que es utilizado para sumar la puntuacion.
- * @param posRand
- * @param respuesta
- * @return
- */
-int checarRespuesta(int posRand, char respuesta){
-    ifstream myFile;
-    string pregunta;
-    string prev = "";
-    string trash;
-    int rand;
-    int numRespuesta;
-    numRespuesta = respuesta - 64;
-    if(numRespuesta > 4){
-        numRespuesta = respuesta - 96;
-    }
-    myFile.open("Preguntas.txt", ios::in);
-    if(myFile.is_open()) {
-        rand = posRand / 5;
-        rand = rand * 5;
-        for (int i = 0; i < rand; i++){
-            getline(myFile, trash);
-        }
-        int i = 0;
-        while (i < 5){
-            getline(myFile, pregunta);
-            if (pregunta != prev) {
-                prev = pregunta;
-                size_t pos = pregunta.find('*');
-                if (pos != string::npos)
-                {
-                    if(i == numRespuesta){
-                        return 1;
-                    } else {
-                        puntuacionMala = puntuacionMala + 1;
-                        return 0;
-                    }
-                }
-            }
-            i++;
-        }
-    } else{
-        cout << "hla"<<endl;
-    }
-}
 
 void gotoxy(int x,int y){
       HANDLE hcon;
@@ -150,18 +64,17 @@ char waitForAnyKey(void)//En esta funcion se utiliza la funcion khbit ya que est
 }
 */void MARCO()
 {
-	int ancho =90, alto=30;//Se declaran dos variable de tipo entero
-	int x = 1, y = 1;//Se inicializan dos variables
-	int pared = 177; //La variable entera se iguala con un valor para despues se usada como codigo ascii
-	char tecla;//se declara una variable de tipo char
-	tecla=pared;//Se iguala la variable entera a la variable tipo char
-	int alturarectagunlo= alto-4;//Se crea una nueva variable que sera la altura del rectangulo
-	system("cls");//Se limpia la pantalla
-	//Se va a las coordenas x,y
-	gotoxy(x,y);
-    //Se inicia un ciclo for para imprimir la parte de arrina del rectangulo
-    //Se escibe un punto y coma antes de y porque la sintaxis del ciclo for no permite escribir si no hay un punto y coma
-    //Y debe ser menor a la altura del rectangulo y yaumenta
+	int ancho =140, alto=30;                //Se declaran dos variable de tipo entero
+	int x = 1, y = 1;                       //Se inicializan dos variables
+	int pared = 177;                        //La variable entera se iguala con un valor para despues se usada como codigo ascii
+	char tecla;                             //se declara una variable de tipo char
+	tecla=pared;                            //Se iguala la variable entera a la variable tipo char
+	int alturarectagunlo= alto-4;           //Se crea una nueva variable que sera la altura del rectangulo
+	system("cls");                          //Se limpia la pantalla
+	gotoxy(x,y);                            //Se va a las coordenas x,y
+                                            //Se inicia un ciclo for para imprimir la parte de arrina del rectangulo
+                                            //Se escibe un punto y coma antes de y porque la sintaxis del ciclo for no permite escribir si no hay un punto y coma
+                                            //Y debe ser menor a la altura del rectangulo y yaumenta
 	for (;y<alturarectagunlo; y++)
 	{
     //Se devuelve a las coordenadas inciales
@@ -380,40 +293,145 @@ int menu()
 	return(selected);//se pide que se retorne la seleccion, para asi, por medio del subrpograma correspondiente se ejecute la opcion elegiga de manera correcta.
 }
 
+void leerPregunta(int posRand){
+
+    int x = 10, y = 5;
+	system("cls");
+	MARCO();
+
+    int rand;
+    ifstream myFile;
+    string pregunta;
+    string prev = "";
+    string trash;
+    myFile.open("Preguntas1.txt", ios::in);
+    if(myFile.is_open()) {
+        rand = posRand / 5;
+        rand = rand * 5;
+        for (int i = 0; i < rand; i++){
+            getline(myFile, trash);
+        }
+        for (int i = 0; i < 5; i++) {
+            getline(myFile, pregunta);
+            if (pregunta != prev) {
+                prev = pregunta;
+                size_t pos = pregunta.find('*');
+                if (pos != string::npos)
+                {
+                    pregunta = pregunta.substr(pos + 1);
+                }
+                gotoxy(x,y++);
+                cout << pregunta << endl;
+
+            }
+        }
+    } else{
+        cout << "hla"<<endl;
+    }
+}
+/**
+ * Funcion utilizada para poder comprobar si la respuesta ingresada es la  correcta. Acepta como Parametros el numero de la
+ * pregunta y la respuesta que ingreso el usuario. Regresa un entero que es utilizado para sumar la puntuacion.
+ * @param posRand
+ * @param respuesta
+ * @return
+ */
+int checarRespuesta(int posRand, char respuesta){
+    ifstream myFile;
+    string pregunta;
+    string prev = "";
+    string trash;
+    int rand;
+    int numRespuesta;
+    numRespuesta = respuesta - 64;
+    if(numRespuesta > 4){
+        numRespuesta = respuesta - 96;
+    }
+    myFile.open("Preguntas1.txt", ios::in);
+    if(myFile.is_open()) {
+        rand = posRand / 5;
+        rand = rand * 5;
+        for (int i = 0; i < rand; i++){
+            getline(myFile, trash);
+        }
+        int i = 0;
+        while (i < 5){
+            getline(myFile, pregunta);
+            if (pregunta != prev) {
+                prev = pregunta;
+                size_t pos = pregunta.find('*');
+                if (pos != string::npos)
+                {
+                    if(i == numRespuesta){
+                        return 1;
+                    } else {
+                        puntuacionMala = puntuacionMala + 1;
+                        return 0;
+                    }
+                }
+            }
+            i++;
+        }
+    } else{
+        cout << "hla"<<endl;
+    }
+}
+
+void actualizarPuntuacion(int puntuacion){
+    gotoxy(10, 12);
+    cout << "Puntuacion Actual: " << puntuacion;
+}
+
+void jugarJuego(){
+    int x = 10, y = 5;
+    int cont=0;
+
+    srand(time(NULL));
+    char respuesta;
+    int puntuacion;
+    //thread hiloPuntuacion;
+
+    while(cont < 10){
+
+    int numRand = 1 + rand() % 400;
+    leerPregunta(numRand);
+
+    do {
+        char temp;
+        gotoxy(x,y+5);
+        cout << "Ingresa la respuesta: ";
+        cin >> temp;
+
+        respuesta = toupper(temp);
+
+        if((respuesta != 'A') && (respuesta != 'B') && (respuesta != 'C') && (respuesta != 'D')){
+            gotoxy(x,y+7);
+            cout << "Respuesta no valida, verifique e intente de nuevo";
+
+        }
+
+    } while((respuesta != 'A') && (respuesta != 'B') && (respuesta != 'C') && (respuesta != 'D'));
+
+    puntuacion += checarRespuesta(numRand, respuesta);
+   // hiloPuntuacion = thread(&actualizarPuntuacion, puntuacion);
+    }
+}
+
 int main(){
+
+    HWND console = GetConsoleWindow();
+    RECT r;
+    GetWindowRect(console, &r); //stores the console's current dimensions
+
+    MoveWindow(console, r.left, r.top, 1200, 500, TRUE);
 	do
 	{
 		switch(menu())
 		{
 		    system("color 90");
 			case 0:
-			    srand(time(NULL));
-                char respuesta;
-                int puntuacion;
-                //thread hiloPuntuacion;
+			    jugarJuego();
 
-                while(puntuacionMala < 4){
-
-                    int numRand = 1 + rand() % 400;
-                    leerPregunta(numRand);
-
-                    do {
-                        char temp;
-                        cout << "Ingresa la respuesta: ";
-                        cin >> temp;
-
-                        respuesta = toupper(temp);
-
-                        if((respuesta != 'A') && (respuesta != 'B') && (respuesta != 'C') && (respuesta != 'D')){
-                            cout << "\nRespuesta no valida, verifique e intente de nuevo\n";
-
-                        }
-
-                    } while((respuesta != 'A') && (respuesta != 'B') && (respuesta != 'C') && (respuesta != 'D'));
-
-                    puntuacion += checarRespuesta(numRand, respuesta);
-                   //hiloPuntuacion = thread(&actualizarPuntuacion, puntuacion);
-                }
 
 			    system("PAUSE");
 				break;
