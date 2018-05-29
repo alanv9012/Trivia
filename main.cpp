@@ -322,7 +322,10 @@ int menu()
     return selected;                                //se pide que se retorne la seleccion, para asi, por medio del subrpograma correspondiente
     //se ejecute la opcion elegiga de manera correcta.
 }
-
+/**
+ * Funcion utilizada para leer la pregunta al usuario
+ * @param posRand  ingresa un numero random que determina la posicion de la pregunta a leer
+ */
 void leerPregunta(int posRand){
 
     int x = 10, y = 5;
@@ -333,31 +336,32 @@ void leerPregunta(int posRand){
     ifstream myFile;
     string pregunta;
     string prev = "";
-    string trash;
-    myFile.open("Preguntas1.txt", ios::in);
-    if(myFile.is_open()) {
+    string trash; //se usa solo para recorrer el archivo en las lineas que no se necesitan
+    try{
+        myFile.open("Preguntas1.txt", ios::in); //abre archivo con las preguntas
         rand = posRand / 5;
-        rand = rand * 5;
+        rand = rand * 5; //esto se hace para quitarle los decimales
         for (int i = 0; i < rand; i++){
-            getline(myFile, trash);
+            getline(myFile, trash); //recorre el documento hasta llegar a la linea deseada
         }
         for (int i = 0; i < 5; i++) {
-            getline(myFile, pregunta);
+            getline(myFile, pregunta); //comienza a leer la pregunta con sus 4 respuestas
             if (pregunta != prev) {
                 prev = pregunta;
                 size_t pos = pregunta.find('*');
                 if (pos != string::npos)
                 {
-                    pregunta = pregunta.substr(pos + 1);
+                    pregunta = pregunta.substr(pos + 1); //si se encuentra un asterisco se lee un espacio despues de este
                 }
                 gotoxy(x,y++);
-                cout << pregunta << endl;
-
+                cout << pregunta << endl; //se imprime la pregunta
+                }
             }
         }
-    } else{
-        cout << "hla"<<endl;
+    catch(ifstream::failure& e){
+        cout << "No se pudo leer el archivo de las preguntas"<<endl;
     }
+
 }
 /**
  * Funcion utilizada para poder comprobar si la respuesta ingresada es la  correcta. Acepta como Parametros el numero de la
