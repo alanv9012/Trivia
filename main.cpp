@@ -338,27 +338,33 @@ void leerPregunta(int posRand){
     string prev = "";
     string trash; //se usa solo para recorrer el archivo en las lineas que no se necesitan
     try{
-        myFile.open("Preguntas1.txt", ios::in); //abre archivo con las preguntas
-        rand = posRand / 5;
-        rand = rand * 5; //esto se hace para quitarle los decimales
-        for (int i = 0; i < rand; i++){
-            getline(myFile, trash); //recorre el documento hasta llegar a la linea deseada
-        }
-        for (int i = 0; i < 5; i++) {
-            getline(myFile, pregunta); //comienza a leer la pregunta con sus 4 respuestas
-            if (pregunta != prev) {
-                prev = pregunta;
-                size_t pos = pregunta.find('*');
-                if (pos != string::npos)
-                {
-                    pregunta = pregunta.substr(pos + 1); //si se encuentra un asterisco se lee un espacio despues de este
-                }
-                gotoxy(x,y++);
-                cout << pregunta << endl; //se imprime la pregunta
+        myFile.open("Preguntas1.txt", ios::in);
+        if(myFile.is_open()) {
+            rand = posRand / 5;
+            rand = rand * 5;
+            for (int i = 0; i < rand; i++){
+                getline(myFile, trash);
+            }
+            for (int i = 0; i < 5; i++) {
+                getline(myFile, pregunta);
+                if (pregunta != prev) {
+                    prev = pregunta;
+                    size_t pos = pregunta.find('*');
+                    if (pos != string::npos)
+                    {
+                        pregunta = pregunta.substr(pos + 1);
+                    }
+                    gotoxy(x,y++);
+                    cout << pregunta << endl;
+
                 }
             }
+        } else{
+            throw (ifstream::failbit);
         }
-    catch(ifstream::failure& e){
+
+    }
+    catch(ifstream::failbit& e){
         cout << "No se pudo leer el archivo de las preguntas"<<endl;
     }
 
@@ -416,8 +422,6 @@ void actualizarPuntuacion(int puntuacion){
     this_thread::sleep_for(chrono::seconds(2));
     gotoxy(10, 13);
 }
-
-
 
 void jugarVideoJuegos(){
     int x = 10, y = 5;
