@@ -38,9 +38,9 @@ int waitForAnyKey()
 {
     int pressed;                //se declara una variable de tipo int ya que se utilizara el codigo ascii
     while(!kbhit());            //Mientras no se presione una tecla no se regresara un valor diferente de cero, si se presiona,
-    //se regresara lo que este en el return, que es la variable pressed
+                                //se regresara lo que este en el return, que es la variable pressed
     pressed = getch();          //Se recoge el valor de pressed con la funcion getch
-    //Lee un caracter directamente de la consola sin hacer uso del buffer, y sin mostrar salida
+                                //Lee un caracter directamente de la consola sin hacer uso del buffer, y sin mostrar salida
     return pressed;             //se pide que se retorne int pressed para poder hacer la accion que se pida en la funcion que la llama
 }
 
@@ -155,16 +155,16 @@ int menuSelector(int x, int y, int yStart)
     do                                              //se crea un ciclo do while para el movimeinto del cursor
     {
         llave = waitForAnyKey();                    //La variable char se inicializa a la funcion de waitforanykey porque el cursor estara a la expectativa
-        //de si el usuario ingresa una tecla
-        //Si en lugar de yStart se pusiera la variable y, al momento de mover el cursor hacia arriba no se eliminaria
-        //el cursor como se estipula en el siguienete
+                                                    //de si el usuario ingresa una tecla
+                                                    //Si en lugar de yStart se pusiera la variable y, al momento de mover el cursor hacia arriba no se eliminaria
+                                                    //el cursor como se estipula en el siguienete
         if ( llave == up_arrow )                    //En este primer if se dice que si llave es igual a up_arrow el cursor se mantendra en el ancho que
-            //dice x, pero aumentara un entero su posicion en yStart
+                                                    //dice x, pero aumentara un entero su posicion en yStart
         {
             gotoxy(x,yStart+i);
             cout<<" "<<endl;
-            if (yStart >= yStart+i )       //En este if statement se considera la situcion en donde si el cursor
-                //qusiera avanzar mas all� de donde esta la primera opcion, el cursor iria hacia la ultima opcion del menu.
+            if (yStart >= yStart+i )                  //En este if statement se considera la situcion en donde si el cursor
+                                                        //qusiera avanzar mas all� de donde esta la primera opcion, el cursor iria hacia la ultima opcion del menu.
                 i = y - yStart -2;         //Esto funciona asi: Si yStar es mayor o igual a yStart+i se realiza la correcion en donde i tomara el valor
             //de yStart-(yStart-2) que seria 5-2=3 que son los lugares que avanzara el cursor
             //Como yStart sera menos que yStart+1 cuando baje en el menu se declara la siguiente conidicion.
@@ -256,13 +256,15 @@ void reglas()
     MARCO();                                               //Se vuelve a llamar la función Marco porque se ha borrado la pantalla
     gotoxy(x,y++);
     cout<<"Reglas del juego:\n"<<endl;
-    gotoxy(x++,y++);
-    cout<<"1.-Para empezar a jugar deberas escoger uno de los 4 temas que son: Videojuegos, Arte, Musica y Deportes "<<endl;
+    gotoxy(x,y++);
+    cout<<"1.-Para empezar a jugar deberas escoger uno de los 4 temas que son: "<<endl;
+    gotoxy(x,y++);
+    cout<<" *Videojuegos, *Arte, *Musica y *Deportes "<<endl;
     gotoxy(x,y++);
     cout<<"2.-Una vez escogido el tema, el juego te hara 10 preguntas de cuatro subtemas diferentes"<<endl;
     gotoxy(x,y++);
     cout<<"3.-Las respuestas que aciertes de las preguntas sera tu puntuacion"<<endl;
-    gotoxy(x,y++);
+    gotoxy(x,y+5);
     cout<<"Presiona cualquier tecla para continuar..."<<endl;
     waitForAnyKey();                                            //Al final se llama a la función wait for any key para esperar a que el usuario ingrese una tecla
     //Y salga de esa sección
@@ -288,10 +290,11 @@ int  exitYN()
     {
 
         gotoxy(13,10);
-        cout<<"Saliendo del juego"<<endl;
-        gotoxy(13,11);
-        cout<<"Hasta luego"<<endl;
+        cout<<"***Saliendo del juego***"<<endl;
+        gotoxy(14,12);
+        cout<<"***Hasta luego***"<<endl;
         gotoxy(13,12);
+        exit(0);
 
     }
 
@@ -317,10 +320,10 @@ int menu()
     cout<<"Salir\n"<<endl;
     gotoxy(x,y++);
     selected = menuSelector(x, y, yStart);          //Para que el menu sea dinamico se debe llamar a la funcion menuSelector. Se pone hasta el final
-    //pues debe imprimirse primero el texto para despues poder seleccionar la opcion.
-    //Se pasan tres parametros que son las posiciones del cursor.
+                                                    //pues debe imprimirse primero el texto para despues poder seleccionar la opcion.
+                                                    //Se pasan tres parametros que son las posiciones del cursor.
     return selected;                                //se pide que se retorne la seleccion, para asi, por medio del subrpograma correspondiente
-    //se ejecute la opcion elegiga de manera correcta.
+                                                    //se ejecute la opcion elegiga de manera correcta.
 }
 /**
  * Funcion utilizada para leer la pregunta al usuario
@@ -338,6 +341,7 @@ void leerPregunta(int posRand){
     string prev = "";
     string trash; //se usa solo para recorrer el archivo en las lineas que no se necesitan
     try{
+        myFile.exceptions(fstream::failbit | fstream::badbit);
         myFile.open("Preguntas1.txt", ios::in);
         if(myFile.is_open()) {
             rand = posRand / 5;
@@ -359,13 +363,14 @@ void leerPregunta(int posRand){
 
                 }
             }
-        } else{
-            throw (ifstream::failbit);
         }
-
     }
-    catch(ifstream::failbit& e){
-        cout << "No se pudo leer el archivo de las preguntas"<<endl;
+    catch(exception const &e){
+         gotoxy(45,5);
+        cout<<"**Error fataL en la apertura de archivos**"<<endl;
+        gotoxy(50,7);
+        cout<<"**Saliendo del programa**"<<endl;
+        exit(1);
     }
 
 }
@@ -384,8 +389,8 @@ int checarRespuesta(int posRand, char respuesta){
     int rand;
     int numRespuesta;
     numRespuesta = respuesta - 64;
-    if(numRespuesta > 4){
-        numRespuesta = respuesta - 96;
+    if(numRespuesta>4){
+        numRespuesta =respuesta - 96;
     }
     myFile.open("Preguntas1.txt", ios::in);
     if(myFile.is_open()) {
@@ -411,8 +416,6 @@ int checarRespuesta(int posRand, char respuesta){
             }
             i++;
         }
-    } else{
-        cout << "hla"<<endl;
     }
 }
 
@@ -636,11 +639,21 @@ int main(){
     int x=10, y=5;
     HWND console = GetConsoleWindow();
     RECT r;
-    GetWindowRect(console, &r); //stores the console's current dimensions
-
+    GetWindowRect(console, &r);
     MoveWindow(console, r.left, r.top, 1200, 500, TRUE);
 
+    HANDLE out= GetStdHandle(STD_OUTPUT_HANDLE); //Se declara una variable de tipo handle  y se debe igualar a la salida standard del Hanlde
+    CONSOLE_CURSOR_INFO  cursorInfo;             //
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(out, &cursorInfo);  //La función se encarga de hacer invisible el cursor en la consola
 
+    MARCO();
+    gotoxy(40,10);
+    cout<<"*******BIENVENIDO AL JUEGO DE LA TRIVIA*******"<<endl;
+    gotoxy(45,12);
+    cout<<"Presiona una tecla para continuar..."<<endl;
+    waitForAnyKey();
 {
     do                                      //Se declara un do que ejecutará el menú hasta que el valor que regresen no sea 1
 
@@ -679,7 +692,6 @@ int main(){
             break;
         case 3:
             exitYN();                   //se llama a la función exitYN
-            return 0;
             break;
         }
     }
